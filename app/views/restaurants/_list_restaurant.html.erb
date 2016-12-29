@@ -1,0 +1,23 @@
+<% num = 1 %>
+<% @restaurants.each do |restaurant| %>
+    <% if num == 1 %>
+        <div class="row">
+    <% end %>
+    <div class="col-md-4">
+      <h2><%= restaurant.name %></h2>
+      <div id="enter">
+        <p><a href="/restaurants/<%= restaurant.id %>"><img src="<%= restaurant.image %>" alt="Подробнее о <%= restaurant.name %>"></a></p>
+      </div>
+      <p><%= truncate(restaurant.description, :length => 250)%></p>
+      <p><a class="btn btn-default" href="/restaurants/<%= restaurant.id %>" role="button"><%=t('index.detail')%> &raquo;</a></p>
+    </div>
+    <% if num == 3 %>
+        </div>
+        <% num = 1 %>
+    <% else %>
+        <% num += 1 %>
+    <% end %>
+<% end %>
+<% if num != 1 %>
+    </div>
+<% end %>
