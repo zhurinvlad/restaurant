@@ -1,34 +1,302 @@
-<p id="notice"><%= notice %></p>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?callback=initMap"></script>
+<script>
+    /** Document Ready Functions **/
+    /********************************************************************/
 
-<p>
-  <strong>Name:</strong>
-  <%= @restaurant.name %>
-</p>
+    $( document ).ready(function() {
 
-<p>
-  <strong>Description:</strong>
-  <%= @restaurant.description %>
-</p>
+        // Resive image
+        scaleImageContainer();
+        initBannerImageSize('.image-container .poster img');
 
-<p>
-  <strong>Addres:</strong>
-  <%= @restaurant.addres %>
-</p>
+        $(window).on('resize', function() {
+            scaleImageContainer();
+            scaleBannerImageSize('.image-container .poster img');
+        });
 
-<p>
-  <strong>Lat:</strong>
-  <%= @restaurant.lat %>
-</p>
+    });
 
-<p>
-  <strong>Lng:</strong>
-  <%= @restaurant.lng %>
-</p>
+//    function initialize() {
+//        var map;
+//        var bounds = new google.maps.LatLngBounds();
+//        var mapOptions = {
+//            mapTypeId: 'roadmap'
+//        };
+//
+//        // Display a map on the page
+//        map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+//        map.setTilt(45);
+//
+//        // Multiple Markers
+//        var markers = [
+//            ['London Eye, London', 51.503454,-0.119562],
+//            ['Palace of Westminster, London', 51.499633,-0.124755]
+//        ];
+//
+//        // Info Window Content
+//        var infoWindowContent = [
+//            ['<div class="info_content">' +
+//            '<h3>London Eye</h3>' +
+//            '<p>The London Eye is a giant Ferris wheel situated on the banks of the River Thames. The entire structure is 135 metres (443 ft) tall and the wheel has a diameter of 120 metres (394 ft).</p>' +        '</div>'],
+//            ['<div class="info_content">' +
+//            '<h3>Palace of Westminster</h3>' +
+//            '<p>The Palace of Westminster is the meeting place of the House of Commons and the House of Lords, the two houses of the Parliament of the United Kingdom. Commonly known as the Houses of Parliament after its tenants.</p>' +
+//            '</div>']
+//        ];
+//
+//        // Display multiple markers on a map
+//        var infoWindow = new google.maps.InfoWindow(), marker, i;
+//
+//        // Loop through our array of markers & place each one on the map
+//        for( i = 0; i < markers.length; i++ ) {
+//            var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
+//            bounds.extend(position);
+//            marker = new google.maps.Marker({
+//                position: position,
+//                map: map,
+//                title: markers[i][0]
+//            });
+//
+//            // Allow each marker to have an info window
+//            google.maps.event.addListener(marker, 'click', (function(marker, i) {
+//                return function() {
+//                    infoWindow.setContent(infoWindowContent[i][0]);
+//                    infoWindow.open(map, marker);
+//                }
+//            })(marker, i));
+//
+//            // Automatically center the map fitting all markers on the screen
+//            map.fitBounds(bounds);
+//        }
+//
+//        // Override our map zoom level once our fitBounds function runs (Make sure it only runs once)
+//        var boundsListener = google.maps.event.addListener((map), 'bounds_changed', function(event) {
+//            this.setZoom(14);
+//            google.maps.event.removeListener(boundsListener);
+//        });
+//
+//    }
+    /** Reusable Functions **/
+    /********************************************************************/
+    function scaleImageContainer() {
+        var height = $(window).height();
+        var unitHeight = parseInt(height)/1.3 + 'px';
+        $('.homepage-hero-module').css('height', unitHeight);
+    }
 
-<p>
-  <strong>Image:</strong>
-  <%= @restaurant.image %>
-</p>
+    function initBannerImageSize(element){
+//        $(element).each(function(){
+//            $(this).data('height', $(this).height());
+//            $(this).data('width', $(this).width());
+//        });
+        scaleBannerImageSize(element);
+    }
 
-<%= link_to 'Edit', edit_restaurant_path(@restaurant) %> |
-<%= link_to 'Back', restaurants_path %>
+    function scaleBannerImageSize(element){
+
+        var windowWidth = $(window).width(),
+            windowHeight = $(window).height(),
+            imageWidth,
+            imageHeight;
+
+        $(element).each(function(){
+            var imageAspectRatio = $(this).height()/$(this).width(),
+                windowAspectRatio = windowHeight/windowWidth;
+
+            if (imageAspectRatio > windowAspectRatio) {
+                imageWidth = windowWidth;
+                imageHeight = imageWidth * imageAspectRatio;
+                $(this).css({'top' : -(imageHeight - windowHeight) / 2 + 'px', 'margin-left' : 0});
+            } else {
+                imageHeight = windowHeight;
+                imageWidth = imageHeight / imageAspectRatio;
+                $(this).css({'margin-top' : 0, 'margin-left' : -(imageWidth - windowWidth) / 2 + 'px'});
+            }
+
+            $(this).width(imageWidth).height(imageHeight);
+
+            $('.homepage-hero-module .image-container image').addClass('fadeIn animated');
+
+
+        });
+    }
+
+    function initMap() {
+        var myLatLng = {lat: <%= @restaurant.lat %>, lng: <%= @restaurant.lng %>};
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 16,
+            center: myLatLng
+        });
+
+        var marker = new google.maps.Marker({
+            position: myLatLng,
+            map: map,
+            title: 'Hello World!'
+        });
+    }
+</script>
+
+<style type="text/css">
+
+  body  {
+    margin: 0
+  }
+  p {
+    text-indent: 35px;
+  }
+
+  .headline {
+    line-height:70px;
+    font-size: 108px;
+    padding:35px 20px;
+  }
+  /*@media only screen and (max-width: 767px) {   body {     !* Здесь размер файла уменьшен на 93% чтобы  увеличить скорость загрузки страницы с мобильных устройств *!     background-image: url(images/background-photo-mobile-devices.jpg);   } }*/
+  .homepage-hero-module {
+    border-right: none;
+    border-left: none;
+    position: relative;
+  }
+
+  .no-image .image-container image,
+  .touch .image-container image {
+    display: none;
+  }
+  .no-image .image-container .poster,
+  .touch .image-container .poster {
+    display: block !important;
+  }
+  .image-container {
+    position: relative;
+    bottom: 0%;
+    left: 0%;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: #000;
+    /* Местоположение фоновой картинки */   background-image: url(<%= @restaurant.image %>);
+    /* Фоновое изображение выровнено по центру в горизонтальной и вертикальной плоскостях */   background-position: center center;
+    /* Фон не повторяется */   background-repeat: no-repeat;
+    /* Фон зафиксирован в области просмотра и потому не двигается, когда высота контента превышает высоту изображения */   background-attachment: fixed;
+    /* Это свойство заставляет фон менять масштаб при изменении размеров содержащего его контейнера*/   background-size: cover;
+    /* Цвет фона, который будет отображаться при загрузке фоновой картинки*/   background-color: #464646;
+  }
+
+  #map{
+    height: 400px;
+    width: 100%;
+  }
+
+  .image-container .poster img {
+    width: 100%;
+    bottom: 0;
+    position: absolute;
+  }
+  .image-container .filter {
+    z-index: 100;
+    position: absolute;
+    background: rgba(0, 0, 0, 0.4);
+    width: 100%;
+  }
+  .image-container .title-container {
+    z-index: 1000;
+    position: absolute;
+    top: 35%;
+    width: 100%;
+    text-align: center;
+    color: #fff;
+  }
+  .image-container .description .inner {
+    font-size: 1em;
+    width: 45%;
+    margin: 0 auto;
+  }
+  .image-container .link {
+    position: absolute;
+    bottom: 3em;
+    width: 100%;
+    text-align: center;
+    z-index: 1001;
+    font-size: 2em;
+    color: #fff;
+  }
+  .image-container .link a {
+    color: #fff;
+  }
+  .image-container imge {
+    position: absolute;
+    z-index: 0;
+    bottom: 0;
+  }
+  .image-container image.fillWidth {
+    width: 100%;
+  }
+</style>
+
+
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">Restaurateur</a>
+    </div>
+    <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav pull-right">
+        <li class="active"><a href="#">Servces</a>
+        </li>
+        <li class="active"><a href="#">Bag</a>
+        </li>
+        <li class="active"><a href="#">News</a>
+        </li>
+        <li class="active"><a href="#">About Us</a>
+        </li>
+        <li class="active"><a href="#">Contact Us</a>
+        </li>
+      </ul>
+    </div>
+    <!--/.navbar-collapse -->
+  </div>
+</div>
+
+<!-- Main jumbotron for a primary marketing message or call to action -->
+<div class="homepage-hero-module">
+  <div class="image-container">
+    <div class="title-container">
+      <div class="headline">
+        <%=@restaurant.name%>
+      </div>
+      <div class="description">
+        <div class="inner"><p id="notice"><%= notice %></p></div>
+      </div>
+    </div>
+    <div class="filter"></div>
+  </div>
+</div>
+
+<div class="container" id="content">
+  <p>
+    <%= @restaurant.description %>
+  </p>
+
+  <!--<p>-->
+    <!--<strong>Addres:</strong>-->
+    <!--<%= @restaurant.addres %>-->
+  <!--</p>-->
+
+
+  <hr>
+</div>
+<div id="map"></div>
+<div class="container">
+  <footer>
+    <p>&copy; zhurinvlad.com 2016</p>
+  </footer>
+</div>
+
+

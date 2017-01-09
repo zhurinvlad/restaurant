@@ -8,6 +8,8 @@ default: &default
   adapter: postgresql
   pool: 5
   timeout: 5000
+  username: zhurinvlad
+  password: 1q2w3e4r5t0
 
 development:
   <<: *default
