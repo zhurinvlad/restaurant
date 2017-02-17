@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  telegram_webhooks TelegramWebhooksController
   resources :restaurants
   resources :users
   root to: "restaurants#index"

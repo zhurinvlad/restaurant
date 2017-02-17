@@ -5,6 +5,7 @@ class RestaurantsController < ApplicationController
   # GET /restaurants.json
   def index
     @restaurants = Restaurant.all
+    Telegram.bot.send_message(chat_id: 166127998, text: 'Рестораны')
   end
 
   # GET /restaurants/1
