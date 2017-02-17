@@ -1,17 +1,12 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
-  rescue_from Exception, with: :generic_exception
-  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
-  # rescue_from StandardError, with: :record_not_found
+  rescue_from Exception, with: :notify_me
+  rescue_from StandardError, with: :notify_me
 
   protected
-  def record_not_found(error)
+  def notify_me(error)
     notify_telegram(error)
-    raise error
-  end
-
-  def generic_exception(error)
-    notify_telegram(error)
+    # notify_email(error)
     raise error
   end
 
@@ -29,7 +24,10 @@ class ApplicationController < ActionController::Base
     fields.each do |field|
       message << "<b>#{field[:name]}:</b> #{field[:value].gsub(/[<>&]/,'')}"
     end
-    Telegram.bot.send_message(chat_id: 166127998, text: message.join("\n"), parse_mode: 'HTML')
+    # chat '-183578090'
+    # me 166127998
+    # https://github.com/telegram-bot-rb/telegram-bot
+    Telegram.bot.send_message(chat_id: '-183578090', text: message.join("\n"), parse_mode: 'HTML')
   end
 
 end
